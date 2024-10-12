@@ -54,6 +54,7 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+//get list of users
 app.get("/users", (req, res) => {
   const name = req.query.name;
   if (name != undefined) {
@@ -65,6 +66,7 @@ app.get("/users", (req, res) => {
   }
 });
 
+//get specific user by id
 app.get("/users/:id", (req, res) => {
   const id = req.params["id"]; //or req.params.id
   let result = findUserById(id);
@@ -74,12 +76,30 @@ app.get("/users/:id", (req, res) => {
     res.send(result);
   }
 });
-  
+
+const deleteUser = (user) => {
+  users["users_list"].splice(users["users_list"].indexOf(user), 1);
+  return user;
+}
+
+//delete user by id
+app.delete("/users/:id", (req, res) => {
+  const id = req.params["id"];
+  let result = findUserById(id);
+  if (result === undefined) {
+    res.status(404).send("Resource not found.");
+  } else {
+    deleteUser(result);
+    res.send()
+  }
+});
+
 const addUser = (user) => {
   users["users_list"].push(user);
   return user;
 };
 
+//add user
 app.post("/users", (req, res) => {
   const userToAdd = req.body;
   addUser(userToAdd);

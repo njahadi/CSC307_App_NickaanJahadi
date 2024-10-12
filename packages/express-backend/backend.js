@@ -41,12 +41,6 @@ const users = {
     ]
   };
 
-const findUserByName = (name) => {
-  return users["users_list"].filter(
-    (user) => user["name"] === name
-  );
-};
-
 const findUserById = (id) =>
   users["users_list"].find((user) => user["id"] === id);
 
@@ -54,16 +48,31 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+const findUserByName = (name) => {
+  return users["users_list"].filter(
+    (user) => user["name"] === name
+  );
+};
+
+const findUserByNameAndJob = (name, job) => {
+  return users["users_list"].filter(
+    (user) => (user["name"] === name && user["job"] === job)
+  );
+};
+
 //get list of users
 app.get("/users", (req, res) => {
   const name = req.query.name;
-  if (name != undefined) {
-    let result = findUserByName(name);
-    result = { users_list: result };
-    res.send(result);
-  } else {
-    res.send(users);
+  const job = req.query.job;
+  let result = users["users_list"];
+  if (name != undefined && job != undefined) {
+    result = findUserByNameAndJob(name, job);
   }
+  else if (name != undefined) {
+    result = findUserByName(name);
+  }
+  result = { users_list: result };
+  res.send(result);
 });
 
 //get specific user by id
@@ -87,7 +96,7 @@ app.delete("/users/:id", (req, res) => {
   const id = req.params["id"];
   let result = findUserById(id);
   if (result === undefined) {
-    res.status(404).send("Resource not found.");
+    res.status(404).send("Resource does not exist.");
   } else {
     deleteUser(result);
     res.send()

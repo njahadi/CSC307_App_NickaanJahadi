@@ -55,12 +55,12 @@ function MyApp() {
     postUser(person)
       .then((res) => {
         if(res.status === 201) {
-          setCharacters([...characters, person])
-        }
-        else {
+          return res.json();
+        } else {
           console.log(`Expected status 201, instead got ${res.status}`);
         }
       })
+      .then((json) => setCharacters([...characters, json]))
       .catch((error) => {
         console.log(error);
       });

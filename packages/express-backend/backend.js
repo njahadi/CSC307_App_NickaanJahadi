@@ -90,7 +90,6 @@ app.get("/users/:id", (req, res) => {
 
 const deleteUser = (user) => {
   users["users_list"].splice(users["users_list"].indexOf(user), 1);
-  return user;
 }
 
 //delete user by id
@@ -98,14 +97,35 @@ app.delete("/users/:id", (req, res) => {
   const id = req.params["id"];
   let result = findUserById(id);
   if (result === undefined) {
-    res.status(404).send("Resource does not exist.");
+    res.status(404).send("Resource not found.");
   } else {
     deleteUser(result);
-    res.send()
+    res.status(204).send();
   }
 });
 
+function genRandomID() {
+  const letters = "abcdefghijklmnopqrstuvwxyz";
+  const numbers = "0123456789";
+
+  //Generate 3 random letters
+  let randomLetters = "";
+  for (let i = 0; i < 3; i++) {
+    randomLetters += letters[Math.floor(Math.random() * letters.length)];
+  }
+
+  // Generate 3 random digits
+  let randomDigits = "";
+  for (let i = 0; i < 3; i++) {
+    randomDigits += numbers[Math.floor(Math.random() * numbers.length)];
+  }
+
+  // Combine letters and digits
+  return randomLetters + randomDigits;
+}
+
 const addUser = (user) => {
+  user["id"] = genRandomID();
   users["users_list"].push(user);
   return user;
 };
@@ -113,6 +133,10 @@ const addUser = (user) => {
 //add user
 app.post("/users", (req, res) => {
   const userToAdd = req.body;
-  addUser(userToAdd);
-  res.send();
+  let result = addUser(userToAdd);
+  if (result != undefined) {
+    res.status(201).send(result);
+  } else {
+    res.status(400).send("Failed to add user.");
+  }
 });

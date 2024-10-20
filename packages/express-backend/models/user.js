@@ -16,7 +16,7 @@ const UserSchema = new mongoose.Schema(
           throw new Error("Invalid job, must be at least 2 characters.");
       },
     },
-  },
+  }, 
   { collection: "users_list" }
 );
 

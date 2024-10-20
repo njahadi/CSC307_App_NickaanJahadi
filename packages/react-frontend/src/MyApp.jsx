@@ -7,7 +7,7 @@ function MyApp() {
 
   function removeOneCharacter(index) {
     const deletedUser = characters.find((character, i) => i === index);
-    const id = deletedUser["id"];
+    const id = deletedUser["_id"];
 
     fetch(`http://localhost:8000/users/${id}`, {
       method: "DELETE"
